@@ -19,49 +19,6 @@
             flex-direction: column;
         }
 
-        .controls {
-            background: #2c3e50;
-            color: white;
-            padding: 12px 20px;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        input[type="text"] {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 4px;
-            width: 250px;
-            font-size: 14px;
-        }
-
-        button {
-            padding: 8px 16px;
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background 0.3s;
-        }
-
-        button:hover {
-            background: #2980b9;
-        }
-
-        button.download {
-            background: #27ae60;
-        }
-
-        button.download:hover {
-            background: #229954;
-        }
-
         .viewer-container {
             flex: 1;
             display: flex;
@@ -101,35 +58,9 @@
         .error-message p {
             color: #7f8c8d;
         }
-
-        @media (max-width: 768px) {
-            .controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            input[type="text"] {
-                width: 100%;
-            }
-
-            button {
-                flex: 1;
-            }
-        }
     </style>
 </head>
 <body>
-    <div class="controls">
-        <input 
-            type="text" 
-            id="pdfInput" 
-            placeholder="Enter PDF filename (e.g., doocument.pdf)" 
-            value="doocument.pdf"
-        >
-        <button onclick="loadPDF()">Load</button>
-        <button class="download" onclick="downloadPDF()">Download</button>
-    </div>
-
     <div class="viewer-container">
         <iframe id="pdfViewer"></iframe>
         <div id="errorMessage" class="error-message">
@@ -140,71 +71,24 @@
 
     <script>
         function loadPDF() {
-            const filename = document.getElementById('pdfInput').value.trim();
+            const filename = 'doocument.pdf'; // Change this to your PDF filename
             const errorDiv = document.getElementById('errorMessage');
             
-            if (!filename) {
-                showError('Please enter a filename');
-                return;
-            }
-
-            // Validate it's a PDF
-            if (!filename.toLowerCase().endsWith('.pdf')) {
-                showError('Please enter a valid PDF filename');
-                return;
-            }
-
             const iframe = document.getElementById('pdfViewer');
             iframe.src = filename;
             errorDiv.classList.remove('show');
 
             // Show error if PDF fails to load
             iframe.onerror = () => {
-                showError(`Could not load "${filename}". Make sure it exists in the repository.`);
+                const errorText = document.getElementById('errorText');
+                errorText.textContent = `Could not load "${filename}". Make sure it exists in the repository.`;
+                errorDiv.classList.add('show');
             };
-        }
-
-        function downloadPDF() {
-            const filename = document.getElementById('pdfInput').value.trim();
-            if (!filename) {
-                showError('Please enter a filename first');
-                return;
-            }
-            const link = document.createElement('a');
-            link.href = filename;
-            link.download = filename;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            const errorText = document.getElementById('errorText');
-            errorText.textContent = message;
-            errorDiv.classList.add('show');
-        }
-
-        // Check URL parameters for PDF filename
-        function getQueryParam(param) {
-            const params = new URLSearchParams(window.location.search);
-            return params.get(param);
         }
 
         // Load PDF on page load
         window.addEventListener('DOMContentLoaded', () => {
-            const urlPdf = getQueryParam('pdf');
-            if (urlPdf) {
-                document.getElementById('pdfInput').value = urlPdf;
-            }
             loadPDF();
-        });
-
-        // Allow Enter key to load PDF
-        document.getElementById('pdfInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                loadPDF();
-            }
         });
     </script>
 </body>
