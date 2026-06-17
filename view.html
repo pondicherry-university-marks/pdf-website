@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My PDF Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .pdf-container {
+            width: 100%;
+            height: 100%;
+            background: #2a2a2a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            display: none;
+            z-index: 10;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #667eea;
+            border-top: 4px solid #764ba2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #e74c3c;
+            color: white;
+            padding: 30px 40px;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+            z-index: 20;
+            max-width: 400px;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .error-message h2 {
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .error-message p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .footer {
+            background: #2a2a2a;
+            color: #999;
+            padding: 15px 20px;
+            text-align: center;
+            font-size: 13px;
+            border-top: 1px solid #444;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .header p {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📄 Document Viewer</h1>
+        <p>Your PDF is displayed below</p>
+    </div>
+
+    <div class="container">
+        <div class="pdf-container">
+            <div class="loading show">
+                <div class="spinner"></div>
+                <p>Loading PDF...</p>
+            </div>
+            <iframe id="pdfViewer"></iframe>
+            <div class="error-message" id="errorMessage">
+                <h2>⚠️ Error</h2>
+                <p id="errorText">Could not load the PDF file.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Document: <strong>doocument.pdf</strong> | Last updated: <span id="timestamp"></span></p>
+    </div>
+
+    <script>
+        const loadingDiv = document.querySelector('.loading');
+        const errorDiv = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+        const pdfViewer = document.getElementById('pdfViewer');
+        const pdfFile = 'doocument.pdf';
+
+        // Set timestamp
+        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+
+        // Load PDF
+        function loadPDF() {
+            loadingDiv.classList.add('show');
+            errorDiv.classList.remove('show');
+
+            // Set the iframe source
+            pdfViewer.src = pdfFile;
+
+            // Hide loading when PDF is loaded
+            pdfViewer.onload = () => {
+                loadingDiv.classList.remove('show');
+            };
+
+            // Handle errors
+            pdfViewer.onerror = () => {
+                loadingDiv.classList.remove('show');
+                errorDiv.classList.add('show');
+                errorText.textContent = `Could not load "${pdfFile}". Please ensure the file exists in the repository.`;
+            };
+
+            // Timeout to show error if PDF takes too long
+            setTimeout(() => {
+                if (loadingDiv.classList.contains('show')) {
+                    loadingDiv.classList.remove('show');
+                }
+            }, 5000);
+        }
+
+        // Load PDF on page load
+        window.addEventListener('DOMContentLoaded', loadPDF);
+    </script>
+</body>
+</html>
