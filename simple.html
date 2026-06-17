@@ -21,7 +21,7 @@
     <iframe id="pdfViewer"></iframe>
     <script>
         const params = new URLSearchParams(window.location.search);
-        const pdfFile = params.get('pdf') || 'doocument.pdf';
+        const pdfFile = params.get('pdf') || 'https://raw.githubusercontent.com/pondicherry-university-marks/pdf-website/main/doocument.pdf';
         document.getElementById('pdfViewer').src = pdfFile;
     </script>
 </body>
