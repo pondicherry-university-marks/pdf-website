@@ -2,13 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>To-Do List App</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
         }
 
         body {
@@ -28,6 +33,9 @@
             border-radius: 12px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
         }
 
         .header {
@@ -35,6 +43,7 @@
             color: white;
             padding: 30px 20px;
             text-align: center;
+            flex-shrink: 0;
         }
 
         .header h1 {
@@ -52,6 +61,7 @@
             border-bottom: 1px solid #f0f0f0;
             display: flex;
             gap: 10px;
+            flex-shrink: 0;
         }
 
         input[type="text"] {
@@ -61,6 +71,7 @@
             border-radius: 6px;
             font-size: 14px;
             transition: border-color 0.3s;
+            min-width: 0;
         }
 
         input[type="text"]:focus {
@@ -79,6 +90,7 @@
             font-weight: 600;
             transition: background 0.3s;
             white-space: nowrap;
+            flex-shrink: 0;
         }
 
         button:hover {
@@ -91,8 +103,9 @@
 
         .tasks-section {
             padding: 20px;
-            max-height: 500px;
             overflow-y: auto;
+            flex: 1;
+            min-height: 0;
         }
 
         .task-item {
@@ -104,6 +117,8 @@
             margin-bottom: 10px;
             transition: all 0.3s;
             animation: slideIn 0.3s ease;
+            gap: 10px;
+            min-height: 0;
         }
 
         @keyframes slideIn {
@@ -134,9 +149,10 @@
         input[type="checkbox"] {
             width: 20px;
             height: 20px;
-            margin-right: 15px;
+            min-width: 20px;
             cursor: pointer;
             accent-color: #667eea;
+            flex-shrink: 0;
         }
 
         .task-text {
@@ -144,13 +160,14 @@
             font-size: 15px;
             color: #333;
             word-break: break-word;
+            min-width: 0;
         }
 
         .delete-btn {
             background: #e74c3c;
             padding: 8px 12px;
             font-size: 12px;
-            margin-left: 10px;
+            flex-shrink: 0;
         }
 
         .delete-btn:hover {
@@ -176,10 +193,15 @@
             justify-content: space-around;
             font-size: 14px;
             color: #666;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .stat {
             text-align: center;
+            flex: 1;
+            min-width: 80px;
         }
 
         .stat-number {
@@ -193,30 +215,140 @@
             background: #95a5a6;
             padding: 10px 15px;
             font-size: 12px;
-            margin-top: 10px;
-            width: 100%;
+            width: calc(100% - 40px);
+            margin: 10px 20px 20px 20px;
+            flex-shrink: 0;
         }
 
         .clear-btn:hover {
             background: #7f8c8d;
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                max-height: 95vh;
+            }
+
+            .header {
+                padding: 20px 15px;
+            }
+
             .header h1 {
                 font-size: 24px;
             }
 
-            .input-section {
+            .stats {
+                flex-direction: row;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+                min-height: 100vh;
+            }
+
+            .container {
+                max-height: none;
+                height: auto;
+                display: flex;
                 flex-direction: column;
+            }
+
+            .header {
+                padding: 15px 12px;
+            }
+
+            .header h1 {
+                font-size: 20px;
+                margin-bottom: 5px;
+            }
+
+            .header p {
+                font-size: 12px;
+            }
+
+            .input-section {
+                padding: 15px;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            input[type="text"] {
+                padding: 10px 12px;
+                font-size: 16px;
             }
 
             button {
+                padding: 10px 15px;
+                font-size: 13px;
                 width: 100%;
             }
 
+            .delete-btn {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+
+            .tasks-section {
+                padding: 15px;
+                max-height: 50vh;
+            }
+
+            .task-item {
+                padding: 12px;
+                margin-bottom: 8px;
+                gap: 8px;
+            }
+
+            .task-text {
+                font-size: 14px;
+            }
+
             .stats {
-                flex-direction: column;
-                gap: 10px;
+                padding: 12px 15px;
+                font-size: 12px;
+                gap: 8px;
+            }
+
+            .stat {
+                min-width: 70px;
+            }
+
+            .stat-number {
+                font-size: 18px;
+            }
+
+            .clear-btn {
+                width: calc(100% - 30px);
+                margin: 8px 15px 15px 15px;
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+
+            input[type="checkbox"] {
+                width: 18px;
+                height: 18px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .header h1 {
+                font-size: 18px;
+            }
+
+            .task-item {
+                padding: 10px;
+                font-size: 13px;
+            }
+
+            .delete-btn {
+                padding: 5px 8px;
+                font-size: 10px;
             }
         }
     </style>
@@ -249,19 +381,19 @@
         <div class="stats">
             <div class="stat">
                 <span class="stat-number" id="totalCount">0</span>
-                <span>Total Tasks</span>
+                <span>Total</span>
             </div>
             <div class="stat">
                 <span class="stat-number" id="completedCount">0</span>
-                <span>Completed</span>
+                <span>Done</span>
             </div>
             <div class="stat">
                 <span class="stat-number" id="pendingCount">0</span>
-                <span>Pending</span>
+                <span>Left</span>
             </div>
         </div>
 
-        <button class="clear-btn" onclick="clearCompleted()">Clear Completed Tasks</button>
+        <button class="clear-btn" onclick="clearCompleted()">Clear Completed</button>
     </div>
 
     <script>
@@ -307,7 +439,7 @@
 
         // Delete a task
         function deleteTask(id) {
-            if (confirm('Are you sure you want to delete this task?')) {
+            if (confirm('Delete this task?')) {
                 let tasks = loadTasks();
                 tasks = tasks.filter(task => task.id !== id);
                 saveTasks(tasks);
@@ -330,7 +462,7 @@
 
         // Clear all completed tasks
         function clearCompleted() {
-            if (confirm('Delete all completed tasks? This cannot be undone.')) {
+            if (confirm('Delete all completed tasks?')) {
                 let tasks = loadTasks();
                 tasks = tasks.filter(task => !task.completed);
                 saveTasks(tasks);
